@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: app
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update

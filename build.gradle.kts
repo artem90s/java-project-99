@@ -29,7 +29,11 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.h2database:h2:2.3.232")
+    implementation("org.postgresql:postgresql:42.7.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

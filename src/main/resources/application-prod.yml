@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: app
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${JDBC_DATABASE_URL}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
