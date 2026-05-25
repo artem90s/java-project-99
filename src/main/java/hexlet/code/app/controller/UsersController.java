@@ -5,6 +5,7 @@ import hexlet.code.app.dto.UserResponse;
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +31,11 @@ public final class UsersController {
     }
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserResponse> getUsers() {
-        return service.getUsers().stream().map(mapper::toDto).toList();
+    public ResponseEntity<List<UserResponse>> getUsers() {
+        var users = service.getUsers().stream().map(mapper::toDto).toList();
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(users.size()))
+                .body(users);
     }
 
     @PostMapping()

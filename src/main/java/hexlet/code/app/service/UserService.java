@@ -4,6 +4,9 @@ import hexlet.code.app.dto.UserDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +15,19 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public final class UserService {
+public final class UserService implements UserDetailsService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = repository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("Юзер не найден " + username));
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .build();
+    }
 
     public List<User> getUsers() {
         return repository.findAll();
