@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -40,6 +41,7 @@ public class UsersControllerTest {
     private UserRepository repository;
 
     @Test
+    @WithMockUser
     void getAllTestSuccess() throws Exception {
         var res = mockMvc.perform(get("/api/users")).andExpect(status().isOk()).andReturn().getResponse();
         List<UserResponse> users = mapper.readValue(res.getContentAsString(), new TypeReference<>() {
@@ -49,6 +51,7 @@ public class UsersControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createUserSuccess() throws Exception {
         var dto = createUser();
         var res = mockMvc.perform(post("/api/users")
@@ -62,6 +65,7 @@ public class UsersControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createNewUserEmailException() throws Exception {
         var dto = createUser();
         dto.setEmail("not_email.ru");
@@ -72,6 +76,7 @@ public class UsersControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createNewUserPasswordException() throws Exception {
         var dto = createUser();
         dto.setPassword("q");
@@ -82,6 +87,7 @@ public class UsersControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updateUserSuccess() throws Exception {
         var dto = new UserDto();
         dto.setEmail("test@test.ru");
@@ -105,6 +111,7 @@ public class UsersControllerTest {
     @Test
     @Transactional
     @Rollback
+    @WithMockUser
     void deleteUserSuccess() throws Exception {
         assertNotNull(repository.findById(1L).orElse(null));
         mockMvc.perform(delete("/api/users/{id}", 1L)

@@ -1,0 +1,14 @@
+package hexlet.code.app.dto;
+
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class TaskStatusDtoForUpdate {
+    @Size(min = 1)
+    private String name;
+    @Size(min = 1)
+    private String slug;
+}
