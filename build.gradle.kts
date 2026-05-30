@@ -1,8 +1,15 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
 plugins {
     java
     id("jacoco")
     id("org.springframework.boot") version "3.5.14"
     id("io.spring.dependency-management") version "1.1.7"
+    id ("io.sentry.jvm.gradle") version "5.5.0"
     id ("org.sonarqube") version "7.3.0.8198"
     checkstyle
 }
@@ -12,6 +19,14 @@ sonar {
         property ("sonar.projectKey", "artem90s_java-project-99")
         property ("sonar.organization", "artem90s")
     }
+}
+
+sentry {
+    includeSourceContext = true
+
+    org = "artem90s"
+    projectName = "java-spring-boot"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
 
 group = "hexlet.code"
@@ -35,6 +50,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17")
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta:7.22.0")
     implementation("com.h2database:h2:2.3.232")
     implementation("org.postgresql:postgresql:42.7.5")
     implementation("org.mapstruct:mapstruct:1.6.0")
@@ -55,4 +72,8 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         html.required.set(true)
     }
+}
+
+dependencyLocking {
+    lockAllConfigurations()
 }

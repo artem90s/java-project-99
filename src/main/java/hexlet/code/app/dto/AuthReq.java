@@ -1,6 +1,7 @@
 package hexlet.code.app.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +12,6 @@ public class AuthReq {
     @NotBlank
     private String username;
     @NotBlank
+    @Size(min = MIN_PASSWORD_LENGTH)
     private String password;
 }

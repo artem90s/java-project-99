@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.dto.UserDto;
 import hexlet.code.app.dto.UserResponse;
 import hexlet.code.app.repository.UserRepository;
+import hexlet.code.app.service.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ public class UsersControllerTest {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private UserService service;
 
     @Test
     @WithMockUser
@@ -93,8 +96,7 @@ public class UsersControllerTest {
         dto.setEmail("test@test.ru");
         dto.setPassword("123");
         dto.setFirstName("Test");
-        var entity = repository.findById(1L).orElse(null);
-        assertThat(entity.getEmail()).isEqualTo("hexlet@example.com");
+        var entity = repository.findByEmail("test@test.ru").orElse(null);
         assertTrue(passwordEncoder.matches("qwerty", entity.getPassword()));
         var res = mockMvc.perform(put("/api/users/{id}", entity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +104,7 @@ public class UsersControllerTest {
                 .andReturn().getResponse();
         UserResponse userResponse = mapper.readValue(res.getContentAsString(), new TypeReference<>() {
         });
-        var entityAfter = repository.findById(1L).orElse(null);
+        var entityAfter = repository.findByEmail("test@test.ru").orElse(null);
         assertThat(userResponse.getEmail()).isEqualTo("test@test.ru");
         assertThat(entityAfter.getEmail()).isEqualTo(userResponse.getEmail());
         assertTrue(passwordEncoder.matches("123", entityAfter.getPassword()));
@@ -113,10 +115,14 @@ public class UsersControllerTest {
     @Rollback
     @WithMockUser
     void deleteUserSuccess() throws Exception {
-        assertNotNull(repository.findById(1L).orElse(null));
-        mockMvc.perform(delete("/api/users/{id}", 1L)
+        var dto = createUser();
+        dto.setEmail("test@test.test");
+        service.save(dto);
+        var fromBd = repository.findByEmail(dto.getEmail());
+        assertNotNull(fromBd);
+        mockMvc.perform(delete("/api/users/{id}", fromBd.get().getId())
         ).andExpect(status().isOk());
-        assertNull(repository.findById(1L).orElse(null));
+        assertNull(repository.findByEmail(dto.getEmail()).orElse(null));
     }
 
     private UserDto createUser() {

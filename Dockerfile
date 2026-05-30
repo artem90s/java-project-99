@@ -1,4 +1,4 @@
-FROM gradle:8.6-jdk21
+FROM gradle:8.10.2-jdk21
 WORKDIR /app
 COPY . .
 RUN gradle bootJar

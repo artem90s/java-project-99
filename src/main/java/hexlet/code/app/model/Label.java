@@ -1,30 +1,27 @@
 package hexlet.code.app.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class TaskStatus {
+public class Label {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
     @Column(unique = true)
-    private String slug;
+    private String name;
     private LocalDate createdAt;
-    @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.ALL)
-    private List<Task> tasks = new ArrayList<>();
+    @ManyToMany(mappedBy = "labels")
+    private List<Task> tasks;
 }

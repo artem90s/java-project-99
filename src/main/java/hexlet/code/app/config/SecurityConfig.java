@@ -31,17 +31,24 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    /** Конфиг спринг секьюрити.
+    /**
+     * Конфиг спринг секьюрити.
+     *
      * @param http
      * @return Возвращает готовую реализацию спринг секьюрити с разрешениеями.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/login").permitAll()
+        // CSRF disabled for OAuth2 resource server (stateless authentication)
+        // See: https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html
+        // noinspection SpringSecurityCSRFDisable
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/login").permitAll()
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/test").permitAll()
                         .requestMatchers("/index.html").permitAll()
                         .requestMatchers("/assets/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder)))
@@ -49,7 +56,9 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /** Бин менеджера аутентифакации.
+    /**
+     * Бин менеджера аутентифакации.
+     *
      * @param http
      * @return Возвращает менеджера аутентификации, который использует ЮзерДетайлз.
      */
