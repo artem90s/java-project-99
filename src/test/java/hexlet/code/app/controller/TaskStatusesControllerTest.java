@@ -92,11 +92,12 @@ public class TaskStatusesControllerTest {
     @Test
     @WithMockUser
     void updateStatus() throws Exception {
-        TaskStatus status = repository.findById(1L).orElseThrow();
-        status.setSlug("oneTwo");
+        TaskStatus status = repository.getTaskStatusBySlug("draft").get();
+        TaskStatusDto dto = new TaskStatusDto();
+        dto.setSlug("oneTwo");
         var res = mockMvc.perform(put("/api/task_statuses/{id}", status.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(status)))
+                        .content(mapper.writeValueAsString(dto)))
                 .andExpect(status().isOk()).andReturn().getResponse();
         TaskStatus result = mapper.readValue(res.getContentAsString(), new TypeReference<>() {
         });

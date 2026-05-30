@@ -2,12 +2,12 @@ package hexlet.code.app.controller;
 
 import hexlet.code.app.dto.AuthReq;
 import hexlet.code.app.util.JWTUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +23,7 @@ public final class AuthController {
     private AuthenticationManager authenticationManager;
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public String createAuth(@RequestBody @Validated AuthReq authReq) throws Exception {
+    public String createAuth(@RequestBody @Valid AuthReq authReq) throws Exception {
         var auth = new UsernamePasswordAuthenticationToken(authReq.getUsername(), authReq.getPassword());
         try {
             authenticationManager.authenticate(auth);

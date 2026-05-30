@@ -4,9 +4,9 @@ import hexlet.code.app.dto.UserDto;
 import hexlet.code.app.dto.UserResponse;
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,13 +40,13 @@ public final class UsersController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse addUser(@RequestBody @Validated UserDto dto) {
+    public UserResponse addUser(@RequestBody @Valid UserDto dto) {
         return mapper.toDto(service.save(dto));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserResponse updateUser(@PathVariable Long id, @RequestBody @Validated UserDto dto) {
+    public UserResponse updateUser(@PathVariable Long id, @RequestBody @Valid UserDto dto) {
         return mapper.toDto(service.updateUser(id, dto));
     }
 

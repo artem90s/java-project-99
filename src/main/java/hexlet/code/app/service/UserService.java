@@ -1,8 +1,10 @@
 package hexlet.code.app.service;
 
 import hexlet.code.app.dto.UserDto;
+import hexlet.code.app.exception.ResourceNotFoundException;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,24 +17,42 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public final class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     *
+     * @param username the username identifying the user whose data is required.
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = repository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("Юзер не найден " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("Юзер не найден " + username));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .build();
     }
 
+    /**
+     * Возвращает список пользователей.
+     *
+     * @return список список пользователей
+     */
     public List<User> getUsers() {
         return repository.findAll();
     }
 
+    /**
+     * Создает нового юзера.
+     *
+     * @param dto данные для создания юзера
+     * @return DTO созданного юзера
+     */
+    @Transactional
     public User save(UserDto dto) {
         User user = new User();
         user.setFirstName(dto.getFirstName());
@@ -43,6 +63,14 @@ public final class UserService implements UserDetailsService {
         return repository.save(user);
     }
 
+    /**
+     * Обновляет существующего юзера.
+     *
+     * @param id  идентификатор обновляемого юзера
+     * @param dto новые данные юзера
+     * @return DTO обновленного юзера
+     */
+    @Transactional
     public User updateUser(Long id, UserDto dto) {
         var user = repository.getById(id);
         user.setFirstName(dto.getFirstName());
@@ -53,10 +81,23 @@ public final class UserService implements UserDetailsService {
         return repository.save(user);
     }
 
+    /**
+     * Возвращает юзера по ID.
+     *
+     * @param id идентификатор юзера
+     * @return DTO юзера
+     */
     public User getUser(Long id) {
         return repository.getById(id);
     }
 
+
+    /**
+     * Удаляет юзера по ID.
+     *
+     * @param id идентификатор удаляемого юзера
+     */
+    @Transactional
     public void deleteUser(Long id) {
         repository.deleteById(id);
     }
