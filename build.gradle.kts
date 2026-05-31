@@ -1,16 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
     java
     id("jacoco")
     id("org.springframework.boot") version "3.5.14"
     id("io.spring.dependency-management") version "1.1.7"
-    id ("io.sentry.jvm.gradle") version "5.5.0"
-    id ("org.sonarqube") version "7.3.0.8198"
+//    id("io.sentry.jvm.gradle") version "6.9.0"
+    id("org.sonarqube") version "7.3.0.8198"
     checkstyle
 }
 
@@ -21,41 +15,35 @@ sonar {
     }
 }
 
-sentry {
-    includeSourceContext = true
-
-    org = "artem90s"
-    projectName = "java-spring-boot"
-    authToken = System.getenv("SENTRY_AUTH_TOKEN")
-}
+//sentry {
+//    includeSourceContext = true
+//
+//    org = "artem90s"
+//    projectName = "java-spring-boot"
+//    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+//}
 
 group = "hexlet.code"
 version = "0.0.1-SNAPSHOT"
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17")
-    implementation("io.sentry:sentry-spring-boot-starter-jakarta:7.22.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
     implementation("com.h2database:h2:2.3.232")
     implementation("org.postgresql:postgresql:42.7.5")
-    implementation("org.mapstruct:mapstruct:1.6.0")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.0")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta:8.43.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -72,8 +60,4 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         html.required.set(true)
     }
-}
-
-dependencyLocking {
-    lockAllConfigurations()
 }
