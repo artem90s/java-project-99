@@ -14,8 +14,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -40,6 +40,6 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
-    private List<Label> labels = new ArrayList<>();
+    private Set<Label> labels = new HashSet<>();
     private LocalDate createdAt;
 }

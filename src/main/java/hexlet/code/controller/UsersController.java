@@ -3,11 +3,11 @@ package hexlet.code.controller;
 import hexlet.code.dto.UserDto;
 import hexlet.code.dto.UserResponse;
 import hexlet.code.dto.UserUpdate;
-import hexlet.code.mapper.UserMapper;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,43 +22,67 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public final class UsersController {
+public class UsersController {
     private final UserService service;
-    private final UserMapper mapper;
 
-    public UsersController(UserService service, UserMapper mapper) {
+    public UsersController(UserService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
+    /**
+     * Метод контроллера , который возвращает список юзеров.
+     * @return список юзеров
+     */
     @GetMapping()
     public ResponseEntity<List<UserResponse>> getUsers() {
-        var users = service.getUsers().stream().map(mapper::toDto).toList();
+        var users = service.getUsers();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(users.size()))
                 .body(users);
     }
 
+    /**
+     * Метод добавления юзера.
+     * @param dto
+     * @return дто юзера
+     */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse addUser(@RequestBody @Valid UserDto dto) {
-        return mapper.toDto(service.save(dto));
+        return service.save(dto);
     }
 
+    /**
+     * Метод обновления юзера.
+     * @param id
+     * @param dto
+     * @return дто юзера
+     */
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserResponse updateUser(@PathVariable Long id, @RequestBody @Valid UserUpdate dto) {
-        return mapper.toDto(service.updateUser(id, dto));
+        return service.updateUser(id, dto);
     }
 
+    /**
+     * Метод , котороый возвращет юзера по его айди.
+     * @param id
+     * @return дто юзера
+     */
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserResponse getUser(@PathVariable Long id) {
-        return mapper.toDto(service.getUser(id));
+        return service.getUser(id);
     }
 
+    /**
+     * Метод удаления юзера по айди.
+     * в котором происходит проверка кастомным методом hasAdminRole()
+     * @param id
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@userServiceImpl.hasAuth(authentication.name)")
     public void deleteUser(@PathVariable Long id) {
         service.deleteUser(id);
     }

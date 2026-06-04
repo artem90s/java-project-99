@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -87,7 +87,7 @@ class TasksControllerTest {
         testTask.setDescription("Create new feature implementation");
         testTask.setTaskStatus(testStatus);
         testTask.setAssignee(testUser);
-        testTask.setLabels(List.of(label));
+        testTask.setLabels(Set.of(label));
         testTask.setCreatedAt(LocalDate.now());
         testTask = taskRepository.save(testTask);
 
@@ -98,7 +98,7 @@ class TasksControllerTest {
         secondTask.setDescription("Write API documentation");
         secondTask.setTaskStatus(toReviewStatus);
         secondTask.setAssignee(testUser);
-        secondTask.setLabels(List.of(bugLabel));
+        secondTask.setLabels(Set.of(bugLabel));
         secondTask.setCreatedAt(LocalDate.now());
         secondTask = taskRepository.save(secondTask);
 
@@ -108,7 +108,7 @@ class TasksControllerTest {
         thirdTask.setDescription("Update feature implementation");
         thirdTask.setTaskStatus(toBeFixedStatus);
         thirdTask.setAssignee(null); // Без исполнителя
-        thirdTask.setLabels(List.of(bugLabel));
+        thirdTask.setLabels(Set.of(bugLabel));
         thirdTask.setCreatedAt(LocalDate.now());
         thirdTask = taskRepository.save(thirdTask);
     }

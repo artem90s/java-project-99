@@ -8,5 +8,15 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=artem90s_java-project-99&metric=coverage)](https://sonarcloud.io/summary/new_code?id=artem90s_java-project-99)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=artem90s_java-project-99&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=artem90s_java-project-99)
 
+В данном репозитории находится исходный код:
+ * Приложение - Менеджер задач
+
 ### Проект доступ онлайн по ссылке
 https://java-project-99-wae3.onrender.com
+
+### Тестовый пользователь
+
+```bash 
+username: hexlet@example.com 
+password: qwerty
+```

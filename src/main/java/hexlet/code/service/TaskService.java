@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -106,7 +108,7 @@ public class TaskService {
             task.setAssignee(user);
         }
         if (dto.getTaskLabelIds() != null && !dto.getTaskLabelIds().isEmpty()) {
-            List<Label> labels = labelRepository.findAllById(dto.getTaskLabelIds());
+            Set<Label> labels = new HashSet<>(labelRepository.findAllById(dto.getTaskLabelIds()));
             task.setLabels(labels);
         }
         task.setCreatedAt(LocalDate.now());
@@ -138,7 +140,7 @@ public class TaskService {
             fromDb.setAssignee(user);
         }
         if (dto.getTaskLabelIds() != null && !dto.getTaskLabelIds().isEmpty()) {
-            List<Label> labels = labelRepository.findAllById(dto.getTaskLabelIds());
+            Set<Label> labels = new HashSet<>(labelRepository.findAllById(dto.getTaskLabelIds()));
             fromDb.setLabels(labels);
         }
         if (dto.getTitle() != null) {

@@ -9,8 +9,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -41,12 +41,12 @@ public interface TaskMapper {
     Task toEntity(TaskUpdateDto dto);
 
     @Named("labelsToIds")
-    default List<Long> labelsToIds(List<Label> labels) {
+    default Set<Long> labelsToIds(Set<Label> labels) {
         if (labels == null) {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
         return labels.stream()
                 .map(Label::getId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }

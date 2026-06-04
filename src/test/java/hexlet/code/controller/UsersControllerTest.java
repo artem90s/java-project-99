@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.UserDto;
 import hexlet.code.dto.UserResponse;
 import hexlet.code.dto.UserUpdate;
+import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,6 +45,8 @@ public class UsersControllerTest {
     private UserRepository repository;
     @Autowired
     private UserService service;
+    @Autowired
+    private UserMapper userMapper;
 
     @Test
     @WithMockUser
@@ -52,6 +56,8 @@ public class UsersControllerTest {
         });
         var usersFromDB = repository.findAll();
         assertThat(users.size()).isEqualTo(usersFromDB.size());
+        var actual = usersFromDB.stream().map(userMapper::toDto).toList();
+        Assertions.assertThat(users).containsExactlyInAnyOrderElementsOf(actual);
     }
 
     @Test
@@ -114,7 +120,7 @@ public class UsersControllerTest {
     @Test
     @Transactional
     @Rollback
-    @WithMockUser
+    @WithMockUser(username = "test@test.test")
     void deleteUserSuccess() throws Exception {
         var dto = createUser();
         dto.setEmail("test@test.test");

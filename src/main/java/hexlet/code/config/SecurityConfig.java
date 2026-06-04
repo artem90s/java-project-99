@@ -1,31 +1,32 @@
 package hexlet.code.config;
 
-import hexlet.code.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
-    @Autowired
     private final JwtDecoder jwtDecoder;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    private final UserService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtDecoder jwtDecoder, PasswordEncoder passwordEncoder, UserService userDetailsService) {
+    public SecurityConfig(JwtDecoder jwtDecoder,
+                          PasswordEncoder passwordEncoder,
+                          @Qualifier(value = "userServiceImpl") UserDetailsService userDetailsService) {
         this.jwtDecoder = jwtDecoder;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
