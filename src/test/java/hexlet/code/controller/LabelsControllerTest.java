@@ -11,9 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -114,12 +112,18 @@ class LabelsControllerTest {
 
     @Test
     @WithMockUser
-    @Transactional
-    @Rollback
     void deleteLabelShouldRemoveLabel() throws Exception {
-        Assertions.assertThat(labelRepository.findById(1L)).isPresent();
+        var labelForDelete = new LabelDto();
+        labelForDelete.setName("for_delete");
+        var res = mockMvc.perform(post("/api/labels")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(labelForDelete)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        Long id = objectMapper.readTree(res).get("id").asLong();
+        Assertions.assertThat(labelRepository.findById(id)).isPresent();
 
-        mockMvc.perform(delete("/api/labels/{id}", 1L))
+        mockMvc.perform(delete("/api/labels/{id}", id))
                 .andExpect(status().isNoContent());
     }
 }

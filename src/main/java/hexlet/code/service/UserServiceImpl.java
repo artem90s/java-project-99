@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -57,12 +56,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Transactional
     public UserResponse save(UserDto dto) {
-        User user = new User();
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
+        User user = mapper.toEntity(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setCreatedAt(LocalDate.now());
         return mapper.toDto(repository.save(user));
     }
 
@@ -75,24 +70,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Transactional
     public UserResponse updateUser(Long id, UserUpdate dto) {
-        var user = repository.getById(id);
-        if (dto.getFirstName() != null) {
-            user.setFirstName(dto.getFirstName());
-        }
-
-        if (dto.getLastName() != null) {
-            user.setLastName(dto.getLastName());
-        }
-
-        if (dto.getEmail() != null) {
-            user.setEmail(dto.getEmail());
-        }
+        var user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Юзер не найден " + id));
+        mapper.updateEntity(dto, user);
 
         if (dto.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-
-        user.setUpdatedAt(LocalDate.now());
         return mapper.toDto(repository.save(user));
     }
 
@@ -119,11 +102,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     /**
      * Проверка прав для метода удаления юзера.
+     *
      * @param email
      * @return
      */
     @Override
     public boolean hasAuth(String email) {
-        return repository.findByEmail(email).isPresent();
+        return repository.existsByEmail(email);
     }
 }

@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -49,7 +48,6 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         TaskStatus status = new TaskStatus();
         status.setName(dto.getName());
         status.setSlug(dto.getSlug());
-        status.setCreatedAt(LocalDate.now());
         return repository.save(status);
     }
 

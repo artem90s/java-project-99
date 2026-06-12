@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -111,7 +110,6 @@ public class TaskService {
             Set<Label> labels = new HashSet<>(labelRepository.findAllById(dto.getTaskLabelIds()));
             task.setLabels(labels);
         }
-        task.setCreatedAt(LocalDate.now());
         taskRepository.save(task);
         return mapper.toDto(task);
     }
