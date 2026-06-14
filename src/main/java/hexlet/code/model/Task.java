@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,12 +27,17 @@ import java.util.Set;
 @NamedEntityGraph(name = "Task.withRelations",
         attributeNodes = {@NamedAttributeNode("taskStatus"), @NamedAttributeNode("assignee")})
 @EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
+    @EqualsAndHashCode.Include
     private String name;
+    @EqualsAndHashCode.Include
     private Integer index;
+    @EqualsAndHashCode.Include
     private String description;
     @ManyToOne
     @JoinColumn(name = "status_id")

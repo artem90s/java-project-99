@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = repository.findByEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Юзер не найден " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Юзер не найден " + username));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
@@ -86,7 +86,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * @return DTO юзера
      */
     public UserResponse getUser(Long id) {
-        return mapper.toDto(repository.getById(id));
+        var user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Юзер не найден " + id));
+        return mapper.toDto(user);
     }
 
 

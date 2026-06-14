@@ -7,7 +7,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import hexlet.code.component.RsaKeyProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,18 +18,23 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
 @Configuration
+@AllArgsConstructor
 public class EncodersConfig {
-    @Autowired
     private RsaKeyProperties rsaKeys;
 
-    /** Бин кодировщика для паролей.
+    /**
+     * Бин кодировщика для паролей.
+     *
      * @return возвращает кодировщика БиКрипт.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    /** Бин для разбора жвт.
+
+    /**
+     * Бин для разбора жвт.
+     *
      * @return возвращает нимбус.
      */
     @Bean
@@ -38,7 +43,10 @@ public class EncodersConfig {
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
-    /** Бин для кодирования жвт.
+
+    /**
+     * Бин для кодирования жвт.
+     *
      * @return возвращает нимбус
      */
     @Bean

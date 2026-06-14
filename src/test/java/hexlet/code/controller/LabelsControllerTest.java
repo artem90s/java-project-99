@@ -1,7 +1,10 @@
 package hexlet.code.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.LabelDto;
+import hexlet.code.dto.LabelResponse;
+import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import org.assertj.core.api.Assertions;
@@ -12,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -31,16 +36,24 @@ class LabelsControllerTest {
     private LabelRepository labelRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private LabelMapper labelMapper;
 
     @Test
     @WithMockUser
     void getLabelsShouldReturnAllLabels() throws Exception {
-        mockMvc.perform(get("/api/labels"))
+        var labelsFromBd = labelRepository.findAll();
+        var res = mockMvc.perform(get("/api/labels"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].name").value("feature"))
-                .andExpect(jsonPath("$[0].createdAt").exists());
+                .andExpect(jsonPath("$[0].createdAt").exists()).andReturn().getResponse();
+        List<LabelResponse> labels = objectMapper.readValue(res.getContentAsString(), new TypeReference<>() {
+        });
+        assertThat(labelsFromBd.size()).isEqualTo(labels.size());
+        var actual = labelsFromBd.stream().map(labelMapper::toResponse).toList();
+        Assertions.assertThat(labels).containsExactlyInAnyOrderElementsOf(actual);
     }
 
     @Test
