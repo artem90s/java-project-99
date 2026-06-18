@@ -5,9 +5,12 @@ import hexlet.code.dto.TaskResponse;
 import hexlet.code.dto.TaskUpdateDto;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,4 +52,14 @@ public interface TaskMapper {
                 .map(Label::getId)
                 .collect(Collectors.toSet());
     }
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", source = "title")
+    @Mapping(target = "description", source = "content")
+    @Mapping(target = "taskStatus", ignore = true)
+    @Mapping(target = "assignee", ignore = true)
+    @Mapping(target = "labels", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Task update(TaskUpdateDto dto, @MappingTarget Task fromDb);
 }

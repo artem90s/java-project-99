@@ -4,6 +4,8 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.TaskStatusDto;
+import hexlet.code.dto.TaskStatusResponse;
+import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +38,8 @@ public class TaskStatusesControllerTest {
     private ObjectMapper mapper;
     @Autowired
     private TaskStatusRepository repository;
+    @Autowired
+    private TaskStatusMapper taskStatusMapper;
 
     @Test
     void getAllStatusesFailedUnauthorized() throws Exception {
@@ -46,10 +50,12 @@ public class TaskStatusesControllerTest {
     @WithMockUser
     void getAllStatuses() throws Exception {
         var res = mockMvc.perform(get("/api/task_statuses")).andExpect(status().isOk()).andReturn().getResponse();
-        List<TaskStatus> statuses = mapper.readValue(res.getContentAsString(), new TypeReference<>() {
+        List<TaskStatusResponse> responses = mapper.readValue(res.getContentAsString(), new TypeReference<>() {
         });
         var statusesDb = repository.findAll();
-        assertThat(statusesDb.size()).isEqualTo(statuses.size());
+        assertThat(statusesDb.size()).isEqualTo(responses.size());
+        List<TaskStatusResponse> statuses = statusesDb.stream().map(taskStatusMapper::toResponse).toList();
+        Assertions.assertThat(statuses).containsExactlyInAnyOrderElementsOf(responses);
     }
 
     @Test
