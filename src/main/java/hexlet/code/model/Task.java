@@ -25,7 +25,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NamedEntityGraph(name = "Task.withRelations",
-        attributeNodes = {@NamedAttributeNode("taskStatus"), @NamedAttributeNode("assignee")})
+        attributeNodes = {
+            @NamedAttributeNode("taskStatus"),
+            @NamedAttributeNode("assignee"),
+            @NamedAttributeNode("labels")
+        })
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Task {
