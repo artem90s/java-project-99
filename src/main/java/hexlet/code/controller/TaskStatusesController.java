@@ -4,7 +4,6 @@ import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.TaskStatusDtoForUpdate;
 import hexlet.code.dto.TaskStatusResponse;
 import hexlet.code.mapper.TaskStatusMapper;
-import hexlet.code.model.TaskStatus;
 import hexlet.code.service.TaskStatusService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,8 @@ public final class TaskStatusesController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TaskStatus getStatus(@PathVariable Long id) {
-        return service.getStatusById(id);
+    public TaskStatusResponse getStatus(@PathVariable Long id) {
+        return mapper.toResponse(service.getStatusById(id));
     }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

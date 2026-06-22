@@ -2,6 +2,7 @@ package hexlet.code.service;
 
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.dto.TaskStatusDtoForUpdate;
+import hexlet.code.exception.ResourceInUseException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
@@ -79,6 +80,10 @@ public class TaskStatusServiceImpl implements TaskStatusService {
      */
     @Transactional
     public void deleteStatus(Long id) {
+        TaskStatus status = repository.findById(id).orElseThrow();
+        if (!status.getTasks().isEmpty()) {
+            throw new ResourceInUseException("Статус используется в созданной задаче");
+        }
         repository.deleteById(id);
     }
 }

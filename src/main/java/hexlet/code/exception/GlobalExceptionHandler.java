@@ -39,7 +39,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<String> handleException(Exception ex) {
-        log.error("Внутренняя ошибка сервера {}", ex.getMessage());
+        log.error("Внутренняя ошибка сервера", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Произошла внутренняя ошибка сервера");
+    }
+
+    @ExceptionHandler(ResourceInUseException.class)
+    public final ResponseEntity<String> handleResourceInUseException(ResourceInUseException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

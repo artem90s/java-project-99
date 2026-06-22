@@ -3,6 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.UserDto;
 import hexlet.code.dto.UserResponse;
 import hexlet.code.dto.UserUpdate;
+import hexlet.code.exception.ResourceInUseException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
@@ -98,6 +99,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Transactional
     public void deleteUser(Long id) {
+        User user = repository.findById(id).orElseThrow();
+        if (!user.getTasks().isEmpty()) {
+            throw new ResourceInUseException("У пользователя есть задачи");
+        }
         repository.deleteById(id);
     }
 

@@ -1,6 +1,7 @@
 package hexlet.code.service;
 
 import hexlet.code.dto.LabelDto;
+import hexlet.code.exception.ResourceInUseException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
@@ -74,6 +75,10 @@ public class LabelServiceImpl implements LabelService {
      */
     @Transactional
     public void deleteLabel(Long id) {
+        Label label = repository.findById(id).orElseThrow();
+        if (!label.getTasks().isEmpty()) {
+            throw new ResourceInUseException("Лейбл используется в существующей задаче");
+        }
         repository.deleteById(id);
     }
 }
