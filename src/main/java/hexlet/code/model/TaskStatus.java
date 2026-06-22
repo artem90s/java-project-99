@@ -15,8 +15,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -36,5 +36,5 @@ public class TaskStatus {
     @CreatedDate
     private LocalDate createdAt;
     @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.ALL)
-    private List<Task> tasks = new ArrayList<>();
+    private Set<Task> tasks = new HashSet<>();
 }

@@ -8,7 +8,6 @@ import hexlet.code.dto.TaskStatusResponse;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
-import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -113,12 +111,15 @@ public class TaskStatusesControllerTest {
     }
 
     @Test
-    @Transactional
-    @Rollback
     @WithMockUser
     void deleteSuccess() throws Exception {
-        TaskStatus status = repository.findById(1L).orElseThrow();
-        mockMvc.perform(delete("/api/task_statuses/{id}", status.getId()))
+        var status = createStatusDto();
+        status.setSlug("for_delete");
+        var res = mockMvc.perform(post("/api/task_statuses")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(status))).andExpect(status().isCreated());
+        TaskStatus statusFromDb = repository.getTaskStatusBySlug("for_delete").orElseThrow();
+        mockMvc.perform(delete("/api/task_statuses/{id}", statusFromDb.getId()))
                 .andExpect(status().isNoContent());
     }
 

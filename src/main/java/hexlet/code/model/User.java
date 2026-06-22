@@ -16,8 +16,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,5 +42,5 @@ public class User {
     @LastModifiedDate
     private LocalDate updatedAt;
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
-    private List<Task> tasks = new ArrayList<>();
+    private Set<Task> tasks = new HashSet<>();
 }

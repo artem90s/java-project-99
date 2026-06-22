@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     public final ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(ex.getMessage());
+                .body("UNAUTHORIZED");
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -40,6 +40,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<String> handleException(Exception ex) {
         log.error("Внутренняя ошибка сервера {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Произошла внутренняя ошибка сервера");
     }
 }
